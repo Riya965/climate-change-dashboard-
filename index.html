@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Climate Change Awareness Dashboard</title>
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar__inner">
+    <div class="navbar__brand">🌍 Climate Awareness</div>
+    <button class="navbar__toggle" id="navToggle">☰</button>
+    <ul class="navbar__links" id="navLinks">
+      <li><button class="navbar__link" data-page="home">Home</button></li>
+      <li><button class="navbar__link" data-page="dashboard">Dashboard</button></li>
+      <li><button class="navbar__link" data-page="info">Climate Info</button></li>
+      <li><button class="navbar__link" data-page="action">Climate Action</button></li>
+      <li><button class="navbar__link" data-page="about">About</button></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ================= HOME ================= -->
+<div class="page" id="page-home">
+  <section class="hero">
+    <div class="hero__inner">
+      <div>
+        <div class="eyebrow">🌐 College Project · Survey-Based Dashboard</div>
+        <h1 class="hero__title">Climate Change <span>Awareness</span></h1>
+        <p class="hero__quote">"Understanding awareness today to build a sustainable tomorrow."</p>
+        <div class="hero__actions">
+          <button class="btn btn--primary" data-page="dashboard">Explore Dashboard →</button>
+          <a class="btn btn--secondary" href="https://forms.gle/LpibqTECsCEzYqs1A" target="_blank" rel="noreferrer">📋 Take Survey</a>
+        </div>
+        <div class="hero__stats">
+          <div><div class="hero__stat-num" data-field="TOTAL_RESPONDENTS">53</div><div class="hero__stat-label">Total respondents</div></div>
+          <div><div class="hero__stat-num" data-field="HEARD_ABOUT_PERCENT" data-suffix="%">77.4</div><div class="hero__stat-label">Heard of climate change</div></div>
+          <div><div class="hero__stat-num" data-field="SERIOUS_AGREE_PERCENT" data-suffix="%">85.4</div><div class="hero__stat-label">Say it's a serious issue</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="ring-card">
+          <canvas id="heroRing" width="240" height="240"></canvas>
+          <div class="ring-card__center">
+            <div class="ring-card__pct" data-field="HEARD_ABOUT_PERCENT" data-suffix="%">77.4</div>
+            <p class="ring-card__label">of respondents have heard about climate change</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="eyebrow">🧠 Why This Project</div>
+      <h2 class="section-heading">A real survey, read like a real dashboard</h2>
+      <p class="section-sub">
+        This project analyzes <span data-field="TOTAL_RESPONDENTS">53</span> responses from the "Climate Change Awareness Survey" to understand
+        how much people know about climate change, where they learn about it, and how seriously they
+        take it — presented as an interactive analytics experience rather than a static form summary.
+      </p>
+      <div class="kpi-grid" style="margin-top:40px">
+        <div class="card kpi-card"><div class="kpi-card__icon">👥</div><div><div class="kpi-card__value" data-field="TOTAL_RESPONDENTS">53</div><div class="kpi-card__label">Survey respondents</div></div></div>
+        <div class="kpi-card__icon"></div>
+        <div class="card kpi-card"><div class="kpi-card__icon">🌐</div><div><div class="kpi-card__value" data-field="HEARD_ABOUT_PERCENT" data-suffix="%">77.4</div><div class="kpi-card__label">Aware of climate change</div></div></div>
+        <div class="card kpi-card"><div class="kpi-card__icon">⚠️</div><div><div class="kpi-card__value" data-field="SERIOUS_AGREE_PERCENT" data-suffix="%">85.4</div><div class="kpi-card__label">Call it a serious issue</div></div></div>
+        <div class="card kpi-card"><div class="kpi-card__icon">🧠</div><div><div class="kpi-card__value"><span data-field="AVERAGE_KNOWLEDGE_RATING">3.34</span> / 5</div><div class="kpi-card__label">Average knowledge rating</div></div></div>
+      </div>
+      <p style="margin-top:18px;font-size:13px;color:var(--ink-soft)">
+        Knowledge, information-source, seriousness, and concern questions were answered by a subset of <span data-field="AWARENESS_RESPONDENTS">41</span> respondents.
+      </p>
+    </div>
+  </section>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div class="page" id="page-dashboard">
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow">✨ Interactive Survey Dashboard</div>
+      <h2 class="section-heading">Survey results at a glance</h2>
+      <p class="section-sub">View of the Climate Change Awareness Survey — <span data-field="TOTAL_RESPONDENTS">53</span> demographic responses, <span data-field="AWARENESS_RESPONDENTS">41</span> awareness &amp; opinion responses.</p>
+
+      <!-- Live data status -->
+      <div id="dataStatus" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--ink-soft)">
+        <span id="dataStatusBadge" style="background:var(--pale-green);color:var(--forest-green);padding:4px 10px;border-radius:999px;font-weight:600">Static demo data — add your Sheet link in liveConfig.js to go live</span>
+        <span id="dataStatusTime"></span>
+        <button id="refreshBtn" style="display:none;background:none;border:1px solid var(--border);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:12.5px">↻ Refresh</button>
+      </div>
+
+      <div class="kpi-grid" style="margin-top:28px">
+        <div class="card kpi-card"><div class="kpi-card__icon">👥</div><div><div class="kpi-card__value" data-field="TOTAL_RESPONDENTS">53</div><div class="kpi-card__label">Total Respondents</div></div></div>
+        <div class="card kpi-card"><div class="kpi-card__icon">🌐</div><div><div class="kpi-card__value" data-field="HEARD_ABOUT_PERCENT" data-suffix="%">77.4</div><div class="kpi-card__label">Heard About Climate Change</div></div></div>
+        <div class="card kpi-card"><div class="kpi-card__icon">⚠️</div><div><div class="kpi-card__value" data-field="SERIOUS_AGREE_PERCENT" data-suffix="%">85.4</div><div class="kpi-card__label">Consider It a Serious Issue</div></div></div>
+        <div class="card kpi-card"><div class="kpi-card__icon">🧠</div><div><div class="kpi-card__value"><span data-field="AVERAGE_KNOWLEDGE_RATING">3.34</span> / 5</div><div class="kpi-card__label">Average Knowledge Rating</div></div></div>
+      </div>
+
+      <div class="divider-label"><span>SURVEY INSIGHTS — DEMOGRAPHICS (<span data-field="TOTAL_RESPONDENTS">53</span> RESPONSES)</span></div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-card__title">Age Distribution</div><div class="chart-card__meta"><span data-field="TOTAL_RESPONDENTS">53</span> responses</div><canvas id="ageChart"></canvas><div class="legend" id="ageLegend"></div></div>
+        <div class="chart-card"><div class="chart-card__title">Gender Distribution</div><div class="chart-card__meta"><span data-field="TOTAL_RESPONDENTS">53</span> responses</div><canvas id="genderChart"></canvas><div class="legend" id="genderLegend"></div></div>
+        <div class="chart-card"><div class="chart-card__title">Occupation</div><div class="chart-card__meta"><span data-field="TOTAL_RESPONDENTS">53</span> responses</div><canvas id="occupationChart"></canvas><div class="legend" id="occupationLegend"></div></div>
+        <div class="chart-card"><div class="chart-card__title">Heard About Climate Change</div><div class="chart-card__meta"><span data-field="TOTAL_RESPONDENTS">53</span> responses</div><canvas id="heardChart"></canvas><div class="legend" id="heardLegend"></div></div>
+      </div>
+
+      <div class="divider-label"><span>KNOWLEDGE &amp; INFORMATION (<span data-field="AWARENESS_RESPONDENTS">41</span> RESPONSES)</span></div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-card__title">Climate Knowledge Rating</div>
+          <div class="chart-card__meta">"How would you rate your knowledge of climate change?" (1–5)</div>
+          <canvas id="knowledgeChart"></canvas>
+          <p style="margin-top:6px;font-size:13px;color:var(--ink-soft)">Average knowledge rating: <strong style="color:var(--navy)"><span data-field="AVERAGE_KNOWLEDGE_RATING">3.34</span> / 5</strong></p>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card__title">Sources of Climate Information</div>
+          <div class="chart-card__meta">Multiple choice — percentages add up to more than 100%</div>
+          <canvas id="sourceChart"></canvas>
+        </div>
+      </div>
+
+      <div class="divider-label"><span>CLIMATE CONCERNS (<span data-field="AWARENESS_RESPONDENTS">41</span> RESPONSES)</span></div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-card__title">Is Climate Change a Serious Global Issue?</div><div class="chart-card__meta"><span data-field="SERIOUS_AGREE_PERCENT" data-suffix="%">85.4</span> agree or strongly agree</div><canvas id="seriousnessChart"></canvas><div class="legend" id="seriousnessLegend"></div></div>
+        <div class="chart-card"><div class="chart-card__title">Most Concerning Climate Issue</div><div class="chart-card__meta">Highest-ranked issue leads the chart</div><canvas id="concernChart"></canvas></div>
+      </div>
+
+      <div class="divider-label"><span>KEY INSIGHTS</span></div>
+      <div class="insight-grid" id="insightGrid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= CLIMATE INFO ================= -->
+<div class="page" id="page-info">
+  <section class="section section--tight">
+    <div class="container">
+      <div class="eyebrow">📖 Climate Awareness</div>
+      <h2 class="section-heading">What is climate change?</h2>
+      <div class="prose-block" style="margin-top:18px">
+        <p>Climate change refers to long-term shifts in temperatures and weather patterns. While some variation is natural, human activity has been the main driver of climate change since the 1800s, primarily through burning fossil fuels that release heat-trapping greenhouse gases into the atmosphere.</p>
+        <p>These gases build up in the atmosphere like a blanket around the Earth, trapping the sun's heat and raising global temperatures. Over time, this warming affects everything from ocean currents and ice caps to rainfall patterns and ecosystems — making awareness and informed action increasingly important.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container">
+      <div class="divider-label"><span>MAJOR CAUSES</span></div>
+      <div class="info-grid">
+        <div class="card info-card"><div class="info-card__icon">🔥</div><div class="info-card__title">Fossil Fuels</div><p class="info-card__text">Burning coal, oil, and gas for energy releases large amounts of carbon dioxide into the atmosphere.</p></div>
+        <div class="card info-card"><div class="info-card__icon">🌳</div><div class="info-card__title">Deforestation</div><p class="info-card__text">Cutting down forests reduces the planet's ability to absorb CO2 and releases stored carbon.</p></div>
+        <div class="card info-card"><div class="info-card__icon">🏭</div><div class="info-card__title">Industrial Emissions</div><p class="info-card__text">Factories and manufacturing processes emit greenhouse gases and pollutants at large scale.</p></div>
+        <div class="card info-card"><div class="info-card__icon">🚗</div><div class="info-card__title">Transportation</div><p class="info-card__text">Cars, trucks, ships, and planes burn fossil fuels, making transport a major emissions source.</p></div>
+        <div class="card info-card"><div class="info-card__icon">🌾</div><div class="info-card__title">Agriculture</div><p class="info-card__text">Livestock farming and fertilizer use release methane and nitrous oxide, potent greenhouse gases.</p></div>
+        <div class="card info-card"><div class="info-card__icon">⚡</div><div class="info-card__title">Energy Production</div><p class="info-card__text">Generating electricity from non-renewable sources remains one of the largest contributors to emissions.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container">
+      <div class="divider-label"><span>MAJOR EFFECTS</span></div>
+      <div class="info-grid">
+        <div class="card info-card info-card--effect"><div class="info-card__icon">🌡️</div><div class="info-card__title">Rising Temperatures</div><p class="info-card__text">Global average temperatures continue to climb, disrupting ecosystems and weather patterns.</p></div>
+        <div class="card info-card info-card--effect"><div class="info-card__icon">🌊</div><div class="info-card__title">Sea-Level Rise</div><p class="info-card__text">Melting ice sheets and glaciers cause oceans to rise, threatening coastal communities.</p></div>
+        <div class="card info-card info-card--effect"><div class="info-card__icon">☀️</div><div class="info-card__title">Heatwaves</div><p class="info-card__text">More frequent and intense heatwaves put pressure on health systems, agriculture, and energy grids.</p></div>
+        <div class="card info-card info-card--effect"><div class="info-card__icon">🌧️</div><div class="info-card__title">Extreme Weather</div><p class="info-card__text">Storms, floods, and droughts are becoming more frequent and more severe.</p></div>
+        <div class="card info-card info-card--effect"><div class="info-card__icon">🌱</div><div class="info-card__title">Agricultural Impacts</div><p class="info-card__text">Shifting rainfall and temperature patterns threaten crop yields and food security.</p></div>
+        <div class="card info-card info-card--effect"><div class="info-card__icon">🐾</div><div class="info-card__title">Biodiversity Loss</div><p class="info-card__text">Habitats are changing faster than many species can adapt, increasing extinction risk.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container">
+      <div class="divider-label"><span>WHY AWARENESS MATTERS</span></div>
+      <div class="prose-block">
+        <p>Awareness is the first step toward action. This survey found that while <span data-field="HEARD_ABOUT_PERCENT" data-suffix="%">77.4</span> of respondents have heard about climate change, meaningful understanding still varies — the average self-rated knowledge score was only <span data-field="AVERAGE_KNOWLEDGE_RATING">3.34</span> out of 5.</p>
+        <p>The more people understand the causes and effects of climate change, the better equipped communities are to support policies, adopt sustainable habits, and hold institutions accountable. Awareness turns concern into action.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= CLIMATE ACTION ================= -->
+<div class="page" id="page-action">
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow">🌿 Climate Action</div>
+      <h2 class="section-heading">Practical actions anyone can take</h2>
+      <p class="section-sub">Awareness matters most when it leads to action. Here are simple, everyday habits that reduce environmental impact.</p>
+      <div class="action-grid" style="margin-top:40px">
+        <div class="card action-card"><div class="action-card__icon">💡</div><div class="action-card__title">Save Energy</div><p class="action-card__text">Turn off lights and appliances when they are not needed.</p></div>
+        <div class="card action-card"><div class="action-card__icon">🚌</div><div class="action-card__title">Use Public Transport</div><p class="action-card__text">Reduce emissions by using buses, trains, cycling, or walking.</p></div>
+        <div class="card action-card"><div class="action-card__icon">🚫</div><div class="action-card__title">Reduce Plastic</div><p class="action-card__text">Avoid unnecessary single-use plastic in daily life.</p></div>
+        <div class="card action-card"><div class="action-card__icon">♻️</div><div class="action-card__title">Reuse &amp; Recycle</div><p class="action-card__text">Give products a second life and recycle responsibly.</p></div>
+        <div class="card action-card"><div class="action-card__icon">🌲</div><div class="action-card__title">Plant Trees</div><p class="action-card__text">Protect existing forests and increase green spaces.</p></div>
+        <div class="card action-card"><div class="action-card__icon">💧</div><div class="action-card__title">Save Water</div><p class="action-card__text">Avoid unnecessary water wastage at home and at work.</p></div>
+        <div class="card action-card"><div class="action-card__icon">☀️</div><div class="action-card__title">Choose Renewable Energy</div><p class="action-card__text">Support clean energy sources such as solar and wind.</p></div>
+        <div class="card action-card"><div class="action-card__icon">🍽️</div><div class="action-card__title">Reduce Food Waste</div><p class="action-card__text">Plan meals and store food properly to cut down on waste.</p></div>
+      </div>
+      <div class="action-banner">
+        <h3>Small Actions Today, Better Tomorrow.</h3>
+        <p>Every habit above, repeated by enough people, adds up to real change.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= ABOUT ================= -->
+<div class="page" id="page-about">
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow">ℹ️ About This Project</div>
+      <h2 class="section-heading">Climate Change Awareness Using Interactive Dashboard</h2>
+      <div class="about-grid" style="margin-top:40px">
+        <div class="prose-block">
+          <p><strong style="color:var(--navy)">Objective.</strong> This project analyzes public awareness of climate change through a structured survey, presenting the findings as an interactive dashboard rather than a static report.</p>
+          <p><strong style="color:var(--navy)">Methodology.</strong> Data was collected using a Google Form titled "Climate Change Awareness Survey." Demographic questions (age, gender, occupation, and prior awareness) received <span data-field="TOTAL_RESPONDENTS">53</span> responses. Follow-up questions on knowledge, information sources, seriousness, and top concerns were answered by a subset of <span data-field="AWARENESS_RESPONDENTS">41</span> respondents.</p>
+          <p><strong style="color:var(--navy)">Purpose of the dashboard.</strong> To turn raw survey responses into a clear, visual, and interactive story — helping viewers quickly understand how aware people are, what shapes that awareness, and how seriously climate change is perceived.</p>
+        </div>
+        <div>
+          <div class="divider-label" style="margin-top:0"><span>PROJECT DETAILS</span></div>
+          <div class="meta-list">
+            <div class="meta-row"><span class="meta-row__key">Total respondents</span><span class="meta-row__val" data-field="TOTAL_RESPONDENTS">53</span></div>
+            <div class="meta-row"><span class="meta-row__key">Awareness-question respondents</span><span class="meta-row__val" data-field="AWARENESS_RESPONDENTS">41</span></div>
+            <div class="meta-row"><span class="meta-row__key">Survey tool</span><span class="meta-row__val">Google Forms</span></div>
+            <div class="meta-row"><span class="meta-row__key">Dashboard type</span><span class="meta-row__val" id="dashboardTypeVal">Interactive, client-side</span></div>
+          </div>
+          <div class="divider-label" style="margin-top:28px"><span>TECHNOLOGY USED</span></div>
+          <div class="tech-chips">
+            <span class="tech-chip">HTML5</span>
+            <span class="tech-chip">CSS3</span>
+            <span class="tech-chip">JavaScript</span>
+            <span class="tech-chip">Chart.js</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  Climate Change Awareness Dashboard — College Project · Built with HTML, CSS &amp; JavaScript
+</footer>
+
+<script src="data.js"></script>
+<script src="liveConfig.js"></script>
+<script src="liveSurvey.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
